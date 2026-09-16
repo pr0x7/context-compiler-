@@ -4,3 +4,5 @@ __pycache__/
 .DS_Store
 graph_snapshots/
 *.jsonl
+HANDOFF.md
+DEV_README.md
