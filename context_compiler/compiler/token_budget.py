@@ -18,13 +18,20 @@ from pathlib import Path
 
 import networkx as nx
 
-# No tokenizer dependency for the baseline — chars/4 is the standard rough
-# approximation for English/code text. Swap in a real tokenizer (tiktoken,
-# the target model's own tokenizer) if you need exact counts later.
+# Use tiktoken for accurate token counting if available, otherwise fallback
+# to the standard rough approximation for English/code text (chars/4).
+try:
+    import tiktoken
+    _ENCODER = tiktoken.get_encoding("cl100k_base")
+except ImportError:
+    _ENCODER = None
+
 _CHARS_PER_TOKEN = 4.0
 
 
 def estimate_tokens(text: str) -> int:
+    if _ENCODER is not None:
+        return max(1, len(_ENCODER.encode(text)))
     return max(1, int(len(text) / _CHARS_PER_TOKEN))
 
 

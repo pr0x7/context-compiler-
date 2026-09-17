@@ -23,7 +23,7 @@ import networkx as nx
 
 from context_compiler.graph.code_graph import build_code_graph
 from context_compiler.parser.repo_parser import parse_repo
-from context_compiler.compiler.seed_retrieval import lexical_seed_retrieval
+from context_compiler.compiler.seed_retrieval import hybrid_seed_retrieval
 from context_compiler.compiler.expansion import fixed_depth_expansion
 from context_compiler.compiler.redundancy import remove_redundant
 from context_compiler.compiler.token_budget import select_within_budget, SelectedNode
@@ -66,7 +66,7 @@ def compile_context(
     uses Phase 5's learned best-first expansion instead of the Phase 2
     fixed-depth baseline. Leave both None for the original baseline behavior.
     """
-    seed_results = lexical_seed_retrieval(graph, task_description, top_k=top_k_seeds)
+    seed_results = hybrid_seed_retrieval(graph, task_description, top_k=top_k_seeds)
     seed_nodes = [n for n, _ in seed_results]
     seed_scores = dict(seed_results)
 

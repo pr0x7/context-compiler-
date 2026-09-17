@@ -38,7 +38,8 @@ def evaluate_strategy(graph, repo_root, tasks, scorer=None, task_vocab=None, tok
             graph, repo_root, task.task_description, token_budget=token_budget,
             scorer=scorer, task_vocab=task_vocab,
         )
-        result = run_ablation(graph, task, bundle)
+        result = run_ablation(graph, repo_root, task, bundle)
+
         precisions.append(result.precision)
         recalls.append(result.recall)
         feasible_count += int(result.feasible)
@@ -101,8 +102,9 @@ if __name__ == "__main__":
     n2 = build_and_save_dataset(g, repo, tasks, data_path_v2, scorer=model, task_vocab=task_vocab)
     print(f"\nRebuilt {n2} training examples from scorer's own selections")
 
-    examples_v2 = load_examples(data_path_v2)
+    examples_v2 = load_examples(data_path) + load_examples(data_path_v2)
     task_vocab_v2 = build_task_vocab([ex["task_description"] for ex in examples_v2])
+
     train_v2, val_v2 = train_val_split(examples_v2)
     model_v2 = EdgeScorer(task_vocab_size=len(task_vocab_v2)).to(device)
     optimizer_v2 = torch.optim.AdamW(model_v2.parameters(), lr=1e-3, weight_decay=0.01)

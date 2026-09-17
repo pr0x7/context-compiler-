@@ -69,7 +69,8 @@ def build_edge_examples(
         graph, repo_root, task.task_description, token_budget=token_budget,
         scorer=scorer, task_vocab=task_vocab,
     )
-    ablation_result = run_ablation(graph, task, bundle)
+    ablation_result = run_ablation(graph, repo_root, task, bundle)
+
     minimal_set = set(ablation_result.minimal_context)
 
     seeds = [n for n, _ in lexical_seed_retrieval(graph, task.task_description, top_k=8)]

@@ -5,16 +5,14 @@ Walks a Python repository at a given commit and extracts structured records:
   - files
   - symbols (functions, methods, classes) with location + docstring
   - import edges (file -> file, resolved best-effort to files within the repo)
-  - call edges (function -> function, name-based resolution — see caveats)
+  - call edges (function -> function, resolved using Jedi static scope analysis)
   - inherits edges (class -> base class)
   - test-to-source mapping (heuristic: which source modules a test file imports)
 
-Uses Python's built-in `ast` module rather than tree-sitter for this level —
-we need semantic info (resolved imports, call targets, class hierarchy)
-that's easier to get from Python's own AST + symbol resolution than from a
-generic tree-sitter parse. The fine-grained per-function graphs used by the
-scorer (Phase 5) still use the tree-sitter pipeline from the original
-AST-classifier project.
+Uses Python's built-in `ast` module + Jedi static symbol resolution engine:
+  - Call edges are resolved using Jedi's `Script.infer()`, disambiguating
+    identically-named methods/functions by exact scope and definition file.
+
 
 CAVEATS (call these out in the writeup, don't let them be silent limitations):
   - Call edges are resolved by *name only* — `foo()` is linked to every
